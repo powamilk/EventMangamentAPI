@@ -1,0 +1,17 @@
+﻿using EventMangamentAPI.Entities;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace EventMangamentAPI.ViewModel
+{
+    public class UpdateRegistrationVM
+    {
+        public int Id { get; set; }
+        public int EventId { get; set; }
+        public int ParticipantId { get; set; }
+        public DateTime RegistrationDate { get; set; }
+        public string Status { get; set; }
+        public Event Event { get; set; }
+        public Participant Participant { get; set; }
+    }
+}
