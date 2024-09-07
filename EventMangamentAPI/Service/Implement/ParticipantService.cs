@@ -1,4 +1,5 @@
-﻿using EventMangamentAPI.Entities;
+﻿using AutoMapper;
+using EventMangamentAPI.Entities;
 using EventMangamentAPI.Service.Interface;
 using EventMangamentAPI.ViewModel;
 using FluentValidation;
@@ -11,12 +12,14 @@ namespace EventMangamentAPI.Service.Implement
         private readonly ILogger<ParticipantService> _logger;
         private readonly IValidator<CreateParticipantVM> _createValidator;
         private readonly IValidator<UpdateParticipantVM> _updateValidator;
+        private readonly IMapper _mapper;
 
-        public ParticipantService(ILogger<ParticipantService> logger, IValidator<CreateParticipantVM> createValidator, IValidator<UpdateParticipantVM> updateValidator)
+        public ParticipantService(ILogger<ParticipantService> logger, IValidator<CreateParticipantVM> createValidator, IValidator<UpdateParticipantVM> updateValidator, IMapper mapper)
         {
             _logger = logger;
             _createValidator = createValidator;
             _updateValidator = updateValidator;
+            _mapper = mapper;
         }
 
         public bool CreateParticipant(CreateParticipantVM request, out string errorMessage)
@@ -55,15 +58,7 @@ namespace EventMangamentAPI.Service.Implement
         {
             if (_participants.Any())
             {
-                var participantsVM = _participants.Select(p => new ParticipantVM
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Email = p.Email,
-                    Phone = p.Phone,
-                    RegisteredAt = p.RegisteredAt
-                }).ToList();
-
+                var participantsVM = _mapper.Map<List<ParticipantVM>>(_participants);
                 errorMessage = null;
                 return participantsVM;
             }
@@ -81,15 +76,7 @@ namespace EventMangamentAPI.Service.Implement
                 return null;
             }
 
-            var participantVM = new ParticipantVM
-            {
-                Id = participant.Id,
-                Name = participant.Name,
-                Email = participant.Email,
-                Phone = participant.Phone,
-                RegisteredAt = participant.RegisteredAt
-            };
-
+            var participantVM = _mapper.Map<ParticipantVM>(participant);
             errorMessage = null;
             return participantVM;
         }

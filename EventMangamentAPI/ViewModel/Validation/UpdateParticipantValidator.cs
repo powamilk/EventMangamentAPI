@@ -2,9 +2,9 @@
 
 namespace EventMangamentAPI.ViewModel.Validation
 {
-    public class CreateParticipantValidator : AbstractValidator<CreateParticipantVM>
+    public class UpdateParticipantValidator : AbstractValidator<UpdateParticipantVM>
     {
-        public CreateParticipantValidator() 
+        public UpdateParticipantValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("Tên người tham gia không được để trống.")
@@ -19,7 +19,7 @@ namespace EventMangamentAPI.ViewModel.Validation
                 .Matches(@"^\+?[1-9]\d{1,14}$").WithMessage("Số điện thoại không hợp lệ.");
 
             RuleFor(x => x.RegisteredAt)
-                .NotEmpty().WithMessage("Thời gian đăng ký tham gia không được để trống.")
+                .NotEmpty().WithMessage("Thời gian đăng ký không được để trống.")
                 .LessThanOrEqualTo(DateTime.Now).WithMessage("Thời gian đăng ký không được ở trong tương lai.");
         }
     }

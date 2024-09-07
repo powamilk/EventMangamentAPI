@@ -3,6 +3,7 @@ using EventMangamentAPI.Service.Interface;
 using EventMangamentAPI.ViewModel;
 using FluentValidation;
 using FluentValidation.Results;
+using AutoMapper;
 
 namespace EventMangamentAPI.Service.Implement
 {
@@ -12,12 +13,14 @@ namespace EventMangamentAPI.Service.Implement
         private readonly ILogger<EventService> _logger;
         private readonly IValidator<CreateEventVM> _createValidator;
         private readonly IValidator<UpdateEventVM> _updateValidator;
+        private readonly IMapper _mapper;
 
-        public EventService(ILogger<EventService> logger, IValidator<CreateEventVM> createValidator, IValidator<UpdateEventVM> updateValidator)
+        public EventService(ILogger<EventService> logger, IValidator<CreateEventVM> createValidator, IValidator<UpdateEventVM> updateValidator, IMapper mapper)
         {
             _logger = logger;
             _createValidator = createValidator;
             _updateValidator = updateValidator;
+            _mapper = mapper;
         }
 
         public bool CreateEvent(CreateEventVM request, out string errorMessage)
@@ -56,19 +59,11 @@ namespace EventMangamentAPI.Service.Implement
 
         public List<EventVM> GetAllEvents(out string errorMessage)
         {
-            if (_events.Any())
-            {
-                var eventsVM = _events.Select(e => new EventVM
-                {
-                    Id = e.Id,
-                    Name = e.Name,
-                    Description = e.Description,
-                    Location = e.Location,
-                    StartTime = e.StartTime,
-                    EndTime = e.EndTime,
-                    MaxParticipants = e.MaxParticipants
-                }).ToList();
+            var events = _events.ToList();
 
+            if (events.Any())
+            {
+                var eventsVM = _mapper.Map<List<EventVM>>(events);
                 errorMessage = null;
                 return eventsVM;
             }
@@ -85,6 +80,7 @@ namespace EventMangamentAPI.Service.Implement
                 errorMessage = "Không tìm thấy sự kiện với ID này.";
                 return null;
             }
+            int nameLength = eventItem.Name.Length;
 
             var eventVM = new EventVM
             {
@@ -94,9 +90,10 @@ namespace EventMangamentAPI.Service.Implement
                 Location = eventItem.Location,
                 StartTime = eventItem.StartTime,
                 EndTime = eventItem.EndTime,
-                MaxParticipants = eventItem.MaxParticipants
+                MaxParticipants = eventItem.MaxParticipants,
+                NameLenght = eventItem.Name.Length 
             };
-
+            //var eventVM = _mapper.Map<EventVM>(eventItem);
             errorMessage = null;
             return eventVM;
         }

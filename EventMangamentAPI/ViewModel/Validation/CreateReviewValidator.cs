@@ -4,7 +4,7 @@ namespace EventMangamentAPI.ViewModel.Validation
 {
     public class CreateReviewValidator : AbstractValidator<CreateReviewVM>
     {
-        public CreateReviewValidator()
+        public CreateReviewValidator() //to do , eventId, participantId
         {
             RuleFor(x => x.Rating)
                 .InclusiveBetween(1, 5).WithMessage("Điểm đánh giá phải nằm trong khoảng từ 1 đến 5.");

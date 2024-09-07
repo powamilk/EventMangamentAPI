@@ -1,4 +1,5 @@
-﻿using EventMangamentAPI.Entities;
+﻿using AutoMapper;
+using EventMangamentAPI.Entities;
 using EventMangamentAPI.Service.Interface;
 using EventMangamentAPI.ViewModel;
 using FluentValidation;
@@ -12,12 +13,14 @@ namespace EventMangamentAPI.Service.Implement
         private readonly ILogger<ReviewService> _logger;
         private readonly IValidator<CreateReviewVM> _createValidator;
         private readonly IValidator<UpdateReviewVM> _updateValidator;
+        private readonly IMapper _mapper;
 
-        public ReviewService(ILogger<ReviewService> logger, IValidator<CreateReviewVM> createValidator, IValidator<UpdateReviewVM> updateValidator)
+        public ReviewService(ILogger<ReviewService> logger, IValidator<CreateReviewVM> createValidator, IValidator<UpdateReviewVM> updateValidator, IMapper mapper)
         {
             _logger = logger;
             _createValidator = createValidator;
             _updateValidator = updateValidator;
+            _mapper = mapper;
         }
 
         public bool CreateReview(CreateReviewVM request, out string errorMessage)
@@ -57,16 +60,7 @@ namespace EventMangamentAPI.Service.Implement
         {
             if (_reviews.Any())
             {
-                var reviewsVM = _reviews.Select(r => new ReviewVM
-                {
-                    Id = r.Id,
-                    EventId = r.EventId,
-                    ParticipantId = r.ParticipantId,
-                    Rating = r.Rating,
-                    Comment = r.Comment,
-                    CreatedAt = r.CreatedAt
-                }).ToList();
-
+                var reviewsVM = _mapper.Map<List<ReviewVM>>(_reviews);
                 errorMessage = null;
                 return reviewsVM;
             }
@@ -84,16 +78,7 @@ namespace EventMangamentAPI.Service.Implement
                 return null;
             }
 
-            var reviewVM = new ReviewVM
-            {
-                Id = review.Id,
-                EventId = review.EventId,
-                ParticipantId = review.ParticipantId,
-                Rating = review.Rating,
-                Comment = review.Comment,
-                CreatedAt = review.CreatedAt
-            };
-
+            var reviewVM = _mapper.Map<ReviewVM>(review);
             errorMessage = null;
             return reviewVM;
         }

@@ -1,4 +1,5 @@
-﻿using EventMangamentAPI.Entities;
+﻿using AutoMapper;
+using EventMangamentAPI.Entities;
 using EventMangamentAPI.Service.Interface;
 using EventMangamentAPI.ViewModel;
 using FluentValidation;
@@ -11,12 +12,14 @@ namespace EventMangamentAPI.Service.Implement
         private readonly ILogger<OrganizerService> _logger;
         private readonly IValidator<CreateOrganizerVM> _createValidator;
         private readonly IValidator<UpdateOrganizerVM> _updateValidator;
+        private readonly IMapper _mapper;
 
-        public OrganizerService(ILogger<OrganizerService> logger, IValidator<CreateOrganizerVM> createValidator, IValidator<UpdateOrganizerVM> updateValidator)
+        public OrganizerService(ILogger<OrganizerService> logger, IValidator<CreateOrganizerVM> createValidator, IValidator<UpdateOrganizerVM> updateValidator, IMapper mapper)
         {
             _logger = logger;
             _createValidator = createValidator;
             _updateValidator = updateValidator;
+            _mapper = mapper;
         }
 
         public bool CreateOrganizer(CreateOrganizerVM request, out string errorMessage)
@@ -52,16 +55,10 @@ namespace EventMangamentAPI.Service.Implement
 
         public List<OrganizerVM> GetAllOrganizers(out string errorMessage)
         {
-            if (_organizers.Any())
+            var organizers = _organizers.ToList();
+            if (organizers.Any())
             {
-                var organizersVM = _organizers.Select(o => new OrganizerVM
-                {
-                    Id = o.Id,
-                    Name = o.Name,
-                    ContactEmail = o.ContactEmail,
-                    Phone = o.Phone
-                }).ToList();
-
+                var organizersVM = _mapper.Map<List<OrganizerVM>>(organizers);
                 errorMessage = null;
                 return organizersVM;
             }
@@ -79,14 +76,7 @@ namespace EventMangamentAPI.Service.Implement
                 return null;
             }
 
-            var organizerVM = new OrganizerVM
-            {
-                Id = organizer.Id,
-                Name = organizer.Name,
-                ContactEmail = organizer.ContactEmail,
-                Phone = organizer.Phone
-            };
-
+            var organizerVM = _mapper.Map<OrganizerVM>(organizer);
             errorMessage = null;
             return organizerVM;
         }

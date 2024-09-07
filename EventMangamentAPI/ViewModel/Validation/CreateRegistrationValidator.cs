@@ -4,7 +4,7 @@ namespace EventMangamentAPI.ViewModel.Validation
 {
     public class CreateRegistrationValidator : AbstractValidator<CreateRegistrationVM>
     {
-        public CreateRegistrationValidator()
+        public CreateRegistrationValidator() //To do; IdEvent
         {
             RuleFor(x => x.EventId)
                 .GreaterThan(0).WithMessage("ID sự kiện không hợp lệ.");

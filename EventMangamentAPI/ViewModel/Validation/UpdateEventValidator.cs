@@ -1,0 +1,32 @@
+﻿using FluentValidation;
+
+namespace EventMangamentAPI.ViewModel.Validation
+{
+    public class UpdateEventValidator : AbstractValidator<UpdateEventVM>
+    {
+        public UpdateEventValidator()
+        {
+            RuleFor(x => x.Name)
+                .NotEmpty().WithMessage("Tên sự kiện không được để trống.")
+                .MaximumLength(255).WithMessage("Tên sự kiện không được vượt quá 255 ký tự.");
+
+            RuleFor(x => x.Description)
+                .MaximumLength(1000).WithMessage("Mô tả sự kiện không được vượt quá 1000 ký tự.");
+
+            RuleFor(x => x.Location)
+                .NotEmpty().WithMessage("Địa điểm tổ chức sự kiện không được để trống.")
+                .MaximumLength(255).WithMessage("Địa điểm tổ chức sự kiện không được vượt quá 255 ký tự.");
+
+            RuleFor(x => x.StartTime)
+                .NotEmpty().WithMessage("Thời gian bắt đầu sự kiện không được để trống.")
+                .GreaterThan(DateTime.Now).WithMessage("Thời gian bắt đầu phải ở trong tương lai.");
+
+            RuleFor(x => x.EndTime)
+                .NotEmpty().WithMessage("Thời gian kết thúc sự kiện không được để trống.")
+                .GreaterThan(x => x.StartTime).WithMessage("Thời gian kết thúc phải sau thời gian bắt đầu.");
+
+            RuleFor(x => x.MaxParticipants)
+                .GreaterThan(0).WithMessage("Số lượng tối đa người tham gia phải là số nguyên dương.");
+        }
+    }
+}

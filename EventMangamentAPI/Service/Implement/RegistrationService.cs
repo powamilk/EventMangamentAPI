@@ -1,4 +1,5 @@
-﻿using EventMangamentAPI.Entities;
+﻿using AutoMapper;
+using EventMangamentAPI.Entities;
 using EventMangamentAPI.Service.Interface;
 using EventMangamentAPI.ViewModel;
 using FluentValidation;
@@ -11,12 +12,14 @@ namespace EventMangamentAPI.Service.Implement
         private readonly ILogger<RegistrationService> _logger;
         private readonly IValidator<CreateRegistrationVM> _createValidator;
         private readonly IValidator<UpdateRegistrationVM> _updateValidator;
+        private readonly IMapper _mapper;
 
-        public RegistrationService(ILogger<RegistrationService> logger, IValidator<CreateRegistrationVM> createValidator, IValidator<UpdateRegistrationVM> updateValidator)
+        public RegistrationService(ILogger<RegistrationService> logger, IValidator<CreateRegistrationVM> createValidator, IValidator<UpdateRegistrationVM> updateValidator, IMapper mapper)
         {
             _logger = logger;
             _createValidator = createValidator;
             _updateValidator = updateValidator;
+            _mapper = mapper;
         }
 
         public bool CreateRegistration(CreateRegistrationVM request, out string errorMessage)
@@ -55,15 +58,7 @@ namespace EventMangamentAPI.Service.Implement
         {
             if (_registrations.Any())
             {
-                var registrationsVM = _registrations.Select(r => new RegistrationVM
-                {
-                    Id = r.Id,
-                    EventId = r.EventId,
-                    ParticipantId = r.ParticipantId,
-                    RegistrationDate = r.RegistrationDate,
-                    Status = r.Status
-                }).ToList();
-
+                var registrationsVM = _mapper.Map<List<RegistrationVM>>(_registrations);
                 errorMessage = null;
                 return registrationsVM;
             }
@@ -81,15 +76,7 @@ namespace EventMangamentAPI.Service.Implement
                 return null;
             }
 
-            var registrationVM = new RegistrationVM
-            {
-                Id = registration.Id,
-                EventId = registration.EventId,
-                ParticipantId = registration.ParticipantId,
-                RegistrationDate = registration.RegistrationDate,
-                Status = registration.Status
-            };
-
+            var registrationVM = _mapper.Map<RegistrationVM>(registration);
             errorMessage = null;
             return registrationVM;
         }
