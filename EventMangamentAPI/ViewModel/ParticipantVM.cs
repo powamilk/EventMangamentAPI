@@ -7,5 +7,6 @@
         public string Email { get; set; }
         public string Phone { get; set; }
         public DateTime RegisteredAt { get; set; }
+        public int ParticipantId { get; internal set; }
     }
 }

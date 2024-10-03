@@ -10,5 +10,6 @@
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public int MaxParticipants { get; set; }
+        public object Status { get; internal set; }
     }
 }

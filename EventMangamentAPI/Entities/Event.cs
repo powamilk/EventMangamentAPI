@@ -10,5 +10,6 @@
         public DateTime EndTime { get; set; }
         public int MaxParticipants { get; set; }
         public ICollection<Registration> Registrations { get; set; }
+        public object Status { get; internal set; }
     }
 }
